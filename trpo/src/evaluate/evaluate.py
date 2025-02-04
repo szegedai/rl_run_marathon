@@ -8,8 +8,8 @@ import gym
 import tensorflow as tf
 
 
-def init_gym():
-    wrappedEnv = gym.make("Walker2d-v4")
+def init_gym(environment):
+    wrappedEnv = gym.make(environment)
     obs_dim = wrappedEnv.env.observation_space.shape[0]
     act_dim = wrappedEnv.env.action_space.shape[0]
     return wrappedEnv, obs_dim, act_dim
@@ -41,12 +41,12 @@ def run_policy(policy, scaler, env, seed):
     return run_episode(policy, scaler, env, seed)
 
 
-def main(models, excel_name):
+def main(models, excel_name, environment):
     datas = {"Model": [], "Steps": [], "Reward Divided by Steps": [], "Rewards": [], "Seed": []}
     models = models.split()
     models_names = []
     for model in models:
-        models_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../model/' + model))
+        models_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../model/' + model))
         model_temps_paths = os.listdir(models_path)
         model_temps_paths = [model + '/' + sub_model for sub_model in model_temps_paths]
         models_names.extend(model_temps_paths)
@@ -55,8 +55,8 @@ def main(models, excel_name):
         model_array = models_names
 
         for model_name in model_array:
-            model_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../../model/' + model_name))
-            env, obs_dim, act_dim = init_gym()
+            model_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../model/' + model_name))
+            env, obs_dim, act_dim = init_gym(environment)
             obs_dim += 1
             scaler = Scaler(model_path)
             policy = Policy(obs_dim, act_dim, model_path)

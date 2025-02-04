@@ -17,7 +17,7 @@ model_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../model'
 
 def init_gym(environment, seed):
     env = gym.make(environment)
-    env.seed(seed)
+    env.action_space.seed(seed)
     obs_dim = env.observation_space.shape[0]
     act_dim = env.action_space.shape[0]
 
@@ -32,6 +32,7 @@ def run_episode(env, policy, scaler, max_iteration):
     scale[-1] = 1.0
     offset[-1] = 0.0
     i = 0
+    obs = obs[0]
     while env.is_healthy and i < max_iteration:
         obs = obs.astype(np.float32).reshape((1, -1))
         obs = np.append(obs, [[step]], axis=1)
@@ -40,8 +41,8 @@ def run_episode(env, policy, scaler, max_iteration):
         observes.append(obs)
         action = policy.sample(obs).reshape((1, -1)).astype(np.float32)
         actions.append(action)
-        obs, reward, _, _ = env.step(action)
-        reward = reward + env.control_cost(action)
+        action = action[0]
+        obs, reward, _, _, _ = env.step(action)
         if not isinstance(reward, float):
             reward = np.asscalar(reward)
         rewards.append(reward)
@@ -149,7 +150,7 @@ def log_batch_stats(observes, actions, advantages, disc_sum_rew, logger, episode
                 })
 
 
-def main(num_episodes, gamma, lam, kl_targ, batch_size, model_folder, max_iteration, model_save_frequency, seed, environment, update_interval_episodes):
+def main(num_episodes, gamma, lam, kl_targ, batch_size, max_iteration, model_save_frequency, seed, environment, update_interval_episodes):
     global model_path
 
     random.seed(seed)
@@ -161,15 +162,17 @@ def main(num_episodes, gamma, lam, kl_targ, batch_size, model_folder, max_iterat
     if model_save_frequency == None:
         model_save_frequency = num_episodes
 
-    if model_folder == None:
-        model_dirs = os.listdir(model_path)
+    model_dirs = os.listdir(model_path)
+    if(model_dirs == []):
+        model_folder = '001'
+        model_path = model_path + '/001'
+        os.makedirs(model_path)
+    else:
         model_dirs.sort()
         dir_number = "{:03d}".format(int(model_dirs[-1]) + 1)
         model_folder = str(dir_number)
         model_path = model_path + '/' + str(dir_number)
         os.makedirs(model_path)
-    else:
-        model_path = model_path + '/' + model_folder
 
     env, obs_dim, act_dim = init_gym(environment, seed)
     obs_dim += 1
@@ -178,7 +181,7 @@ def main(num_episodes, gamma, lam, kl_targ, batch_size, model_folder, max_iterat
     logger = Logger(logname=environment, now=now)
     episode = 0
     scaler = Scaler(obs_dim)
-    val_func = NNValueFunction(obs_dim, model_path, model_save_frequency, seed)
+    val_func = NNValueFunction(obs_dim, model_path, seed)
     policy = Policy(obs_dim, act_dim, kl_targ, batch_size, model_path, model_save_frequency, seed)
 
     run_policy(env, policy, scaler, logger, 5, episode, max_iteration, model_save_frequency, update_interval_episodes)
@@ -191,7 +194,10 @@ def main(num_episodes, gamma, lam, kl_targ, batch_size, model_folder, max_iterat
         add_gae(trajectories, gamma, lam)
         observes, actions, advantages, disc_sum_rew = build_train_set(trajectories)
         log_batch_stats(observes, actions, advantages, disc_sum_rew, logger, episode)
-        policy.update(observes, actions, advantages, logger, episode)
+        policy_episode = batch_size
+        if episode >= update_interval_episodes:
+            policy_episode = 10
+        policy.update(observes, actions, advantages, logger, policy_episode)
         val_func.fit(observes, disc_sum_rew, logger)
         logger.write(display=True)
     logger.close()

@@ -188,11 +188,16 @@ def main(gamma, lam, kl_targ, seed, environment, total_training_steps, save_step
     tf.config.experimental.enable_op_determinism()
 
     model_dirs = os.listdir(model_path)
-    model_dirs.sort()
-    dir_number = "{:03d}".format(int(model_dirs[-1]) + 1)
-    model_folder = str(dir_number)
-    model_path = model_path + '/' + str(dir_number)
-    os.makedirs(model_path)
+    if(model_dirs == []):
+        model_folder = '001'
+        model_path = model_path + '/001'
+        os.makedirs(model_path)
+    else:
+        model_dirs.sort()
+        dir_number = "{:03d}".format(int(model_dirs[-1]) + 1)
+        model_folder = str(dir_number)
+        model_path = model_path + '/' + str(dir_number)
+        os.makedirs(model_path)
 
     env, obs_dim, act_dim = init_gym(environment, seed)
     obs_dim += 1

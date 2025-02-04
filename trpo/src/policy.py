@@ -10,7 +10,6 @@ class Policy(object):
         self.model_path = model_path
         self.graph_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../graph'))
         self.episodes = 0
-        self.batch_size = batch_size
         self.beta = 1.0
         self.lr_multiplier = 1.0
         self.lr = None
@@ -126,7 +125,7 @@ class Policy(object):
 
         return self.sess.run(self.sampled_act, feed_dict=feed_dict)
 
-    def update(self, observes, actions, advantages, logger):
+    def update(self, observes, actions, advantages, logger, batch_size=20):
         feed_dict = {self.obs_ph: observes,
                      self.act_ph: actions,
                      self.advantages_ph: advantages,
@@ -153,7 +152,7 @@ class Policy(object):
             if self.beta < (1 / 30) and self.lr_multiplier < 10:
                 self.lr_multiplier *= 1.5
 
-        self.episodes += self.batch_size
+        self.episodes += batch_size
         if(self.episodes % self.model_save_frequency == 0):
             with open(self.model_path + '/' + str(self.episodes) + '/info/episodes.txt', 'w') as f:
                 f.write(str(self.episodes))

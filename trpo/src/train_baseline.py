@@ -14,9 +14,9 @@ import tensorflow as tf
 model_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../model'))
 
 
-def init_gym(environment):
+def init_gym(environment, seed):
     env = gym.make(environment)
-    env.action_space.seed(0)
+    env.action_space.seed(seed)
     obs_dim = env.observation_space.shape[0]
     act_dim = env.action_space.shape[0]
 
@@ -152,24 +152,26 @@ def main(num_episodes, gamma, lam, kl_targ, batch_size, model_save_frequency, se
     if model_save_frequency == None:
         model_save_frequency = num_episodes
 
-    if model_folder == None:
-        model_dirs = os.listdir(model_path)
+    model_dirs = os.listdir(model_path)
+    if(model_dirs == []):
+        model_folder = '001'
+        model_path = model_path + '/001'
+        os.makedirs(model_path)
+    else:
         model_dirs.sort()
         dir_number = "{:03d}".format(int(model_dirs[-1]) + 1)
         model_folder = str(dir_number)
         model_path = model_path + '/' + str(dir_number)
         os.makedirs(model_path)
-    else:
-        model_path = model_path + '/' + model_folder
 
-    env, obs_dim, act_dim = init_gym(environment)
+    env, obs_dim, act_dim = init_gym(environment, seed)
     obs_dim += 1
 
     now = datetime.now().strftime("%Y-%m-%d_%H" + 'h' + "_%M" + 'm' + "_%S" + 's' + '--' + model_folder)
     logger = Logger(logname=environment, now=now)
     episode = 0
     scaler = Scaler(obs_dim)
-    val_func = NNValueFunction(obs_dim, model_path, model_save_frequency, seed)
+    val_func = NNValueFunction(obs_dim, model_path, seed)
     policy = Policy(obs_dim, act_dim, kl_targ, batch_size, model_path, model_save_frequency, seed)
 
     run_policy(env, policy, scaler, logger, 5, episode, model_save_frequency)
