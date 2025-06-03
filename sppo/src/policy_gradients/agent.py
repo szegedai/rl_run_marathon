@@ -32,8 +32,6 @@ from .convex_relaxation import get_kl_bound as get_state_kl_bound
 
 from scipy.stats import norm
 
-current_step = 0
-
 class ExpoScheduler(BaseScheduler):
 
     def __init__(self, max_eps, opt_str):
@@ -497,7 +495,7 @@ class Trainer():
         else:
             return cu_tensorize([env.reset() for env in envs]).unsqueeze(1)
 
-    def multi_actor_step(self, actions, envs, max_len=20000, t=0):
+    def multi_actor_step(self, actions, envs, max_len=1000, t=0):
         '''
         Simulate a "step" by several actors on their respective environments
         Inputs:
@@ -550,7 +548,6 @@ class Trainer():
         - action_logprobs: (# actors, self.T, ) log probabilities of each action
         - states: (# actors, self.T, ... state_shape) states
         """
-        global current_step
         if collect_adversary_trajectory:
             # The adversary does not change environment normalization.
             # So a trained adversary can be applied to the original policy when it is trained as an optimal attack.
@@ -604,10 +601,6 @@ class Trainer():
             # States are collected before the perturbation.
             states[:, 0, :] = initial_states
             last_states = states[:, 0, :]
-        current_step += 1
-        max_len = 1024
-        if current_step >= 480:
-            max_len = 2048
         for t in iterator:
             # assert shape_equal([self.NUM_ACTORS, self.NUM_FEATURES], last_states)
             # Retrieve probabilities:
@@ -679,7 +672,7 @@ class Trainer():
             # else:
             #     assert shape_equal([self.NUM_ACTORS, 1, self.policy_model.action_dim])
 
-            ret = self.multi_actor_step(next_actions, envs, max_len, t+1)
+            ret = self.multi_actor_step(next_actions, envs, 1000, t+1)
 
             # done_info = List of (length, reward) pairs for each completed trajectory
             # (next_rewards, next_states, next_dones) act like multi-actor env.step()

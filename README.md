@@ -34,7 +34,7 @@ pip install openpyxl
 ```
 cd sppo/src
 
-python run.py --config-path config_hopper_sppo{_sgld}.json --seed=0 --run-type {baseline/static/dynamic}
+python run.py --config-path config_hopper_sppo{_sgld}.json --seed=0 --run-type {baseline/dynamic}
 ```
 The models are saved in the sppo/src/sppo{_sgld}_hopper/agents folder.
 
@@ -65,10 +65,6 @@ cd trpo/src
 python train_baseline.py --num_episodes 30000 --model_save_frequency 1500 --seed 0 --environment "Hopper-v4"
 python train_baseline.py --num_episodes 25200 --model_save_frequency 1260 --seed 0 --environment "Walker2d-v4"
 python train_baseline.py --num_episodes 200000 --model_save_frequency 10000 --seed 0 --environment "Humanoid-v4"
-
-python train_static.py --num_episodes 22400 --model_save_frequency 1120 --seed 0 -environment "Hopper-v4" --update_interval_episodes 15000
-python train_static.py --num_episodes 18400 --model_save_frequency 920 --seed 0 -environment "Walker2d-v4" --update_interval_episodes 12400
-python train_static.py --num_episodes 200000 --model_save_frequency 920 --seed 0 -environment "Humanoid-v4" --update_interval_episodes 100000
 
 python train_dynamic.py --environment "Hopper-v4" --seed 0 --total_training_steps 23000000 --save_steps 1150000
 python train_dynamic.py --environment "Walker2d-v4" --seed 0 --total_training_steps 21400000 --save_steps 1070000

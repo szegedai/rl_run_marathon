@@ -98,8 +98,6 @@ def main(params):
 
     if args.run_type == "dynamic":
         from policy_gradients.agent_dynamic import Trainer
-    elif args.run_type == "static":
-        from policy_gradients.agent_static import Trainer
     else:
         from policy_gradients.agent import Trainer
 
@@ -415,7 +413,7 @@ if __name__ == '__main__':
     parser.add_argument('--adv-policy-only', action='store_true', required=False, help='Run adversary only, by setting main agent learning rate to 0')
     parser.add_argument('--deterministic', action='store_true', help='disable Gaussian noise in action for --adv-policy-only mode')
     parser.add_argument('--seed', type=int, help='random seed', default=-1)
-    parser.add_argument('--run-type', type=str, help='baseline, static, dynamic', required=True, choices=["static", "dynamic", "baseline"])
+    parser.add_argument('--run-type', type=str, help='baseline, dynamic', required=True, choices=["dynamic", "baseline"])
     parser = add_common_parser_opts(parser)
     
     args = parser.parse_args()
