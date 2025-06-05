@@ -496,7 +496,7 @@ class Trainer():
         else:
             return cu_tensorize([env.reset() for env in envs]).unsqueeze(1)
 
-    def multi_actor_step(self, actions, envs, max_len=2000, t=0):
+    def multi_actor_step(self, actions, envs, max_len=20000, t=0):
         '''
         Simulate a "step" by several actors on their respective environments
         Inputs:
@@ -681,7 +681,7 @@ class Trainer():
             #     assert shape_equal([self.NUM_ACTORS, 1, self.policy_model.action_dim])
 
             self.current_step += 1
-            ret = self.multi_actor_step(next_actions, envs, 2000, self.current_step)
+            ret = self.multi_actor_step(next_actions, envs, 20000, self.current_step)
 
             # done_info = List of (length, reward) pairs for each completed trajectory
             # (next_rewards, next_states, next_dones) act like multi-actor env.step()
