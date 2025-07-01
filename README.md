@@ -87,6 +87,51 @@ python evaluate.py "model1 model2 ..." -env {Hopper-v4/Walker2d-v4/Humanoid-v4} 
 The identifier of the models (the name of the folder where the model was saved like 001, 002, etc..) should be provided, even more than one at list level.
 
 
+## Generating Summary Tables from Trained Models
+
+This guide explains how to generate the summary tables (also included in the publication) using the scripts in the `metrics_preprocess` directory.
+
+### Prerequisites
+
+Make sure you have the following:
+
+- All required dependencies installed
+- Trained model files accessible locally
+
+### Step-by-Step Instructions
+
+#### 1. Navigate to the `metrics_preprocess` directory
+
+This folder contains the following Python scripts:
+
+- `preprocess.py`
+- `best_models_selection.py`
+
+#### 2. Set the correct model paths
+
+Before running the scripts, open both `preprocess.py` and `best_models_selection.py` and update the model path variables to point to the actual location of your trained models.
+
+#### 3. Run the preprocessing script
+
+Execute the following command in your terminal:
+```
+python preprocess.py
+```
+This script processes the raw evaluation metrics.
+
+#### 4. Run the model selection script
+
+After the preprocessing step, run:
+
+```
+python best_models_selection.py
+```
+This script will analyze the processed data and select the best-performing models.
+
+#### 5. Output
+The final output will be a file named {sppo,trpo}_summary.xlsx containing the summary tables of the selected models.
+
+
 ## References
 
 1. [Trust Region Policy Optimization](https://arxiv.org/pdf/1502.05477.pdf)
