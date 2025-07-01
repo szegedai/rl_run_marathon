@@ -42,7 +42,7 @@ def run_policy(policy, scaler, env, seed):
 
 
 def main(models, excel_name, environment):
-    datas = {"Model": [], "Steps": [], "Reward Divided by Steps": [], "Rewards": [], "Seed": []}
+    data = {"Model": [], "Steps": [], "Reward Divided by Steps": [], "Rewards": [], "Seed": []}
     models = models.split()
     models_names = []
     for model in models:
@@ -62,18 +62,18 @@ def main(models, excel_name, environment):
             scaler = Scaler(model_path)
             policy = Policy(obs_dim, act_dim, model_path, model_subpath)
             steps, rewards = run_policy(policy, scaler, env, seed)
-            datas["Model"].append(model_name)
-            datas["Steps"].append(steps)
-            datas["Reward Divided by Steps"].append(rewards / steps)
-            datas["Rewards"].append(rewards)
-            datas["Seed"].append(seed)
+            data["Model"].append(model_name)
+            data["Steps"].append(steps)
+            data["Reward Divided by Steps"].append(rewards / steps)
+            data["Rewards"].append(rewards)
+            data["Seed"].append(seed)
 
         if not os.path.exists('results'):
             os.makedirs('results')
         writer = pd.ExcelWriter('results/' + excel_name + '.xlsx', engine = 'xlsxwriter')
 
-        datas_df = pd.DataFrame(datas)
-        datas_df.to_excel(writer, sheet_name="Sheet1")
+        data_df = pd.DataFrame(data)
+        data_df.to_excel(writer, sheet_name="Sheet1")
 
     writer.save()
 

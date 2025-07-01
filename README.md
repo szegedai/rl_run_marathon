@@ -51,12 +51,18 @@ The identifier of the models should be provided, even more than one at list leve
 
 The repository, by pat-coady (https://github.com/pat-coady/trpo/tree/aigym_evaluation) contains an implementation of Trust Region Policy Optimization (TRPO), a reinforcement learning algorithm introduced by John Schulman et al. TRPO is a policy optimization method designed to improve stability and efficiency when training agents in environments with continuous action spaces.
 
-### Setup (need extend)
-* Python 3.7
-* The Usual Suspects: NumPy, matplotlib, scipy
-* TensorFlow
-* gym - [installation instructions](https://gym.openai.com/docs)
-* [MuJoCo](http://www.mujoco.org/)
+### Setup
+follow the instructions [here](https://github.com/openai/mujoco-py#install-mujoco) to install mujoco
+```
+python=3.8
+pip install protobuf==3.20
+pip install gym
+pip install scikit-learn
+pip install mujoco
+pip install "cython<3"
+pip install pandas
+pip install tensorflow-gpu==2.4.1
+```
 
 ### Training
 ```

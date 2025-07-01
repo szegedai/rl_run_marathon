@@ -14,9 +14,6 @@ venv/
 # generated files
 exportToHTML/
 
-# model datas for continue training
-# model/*/info/value_function.pkl
-# model/*/info/policy.pkl
 model/*
 
 #...

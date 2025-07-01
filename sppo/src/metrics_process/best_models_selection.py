@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-datas = [
+data = [
     {'env': 'Hopper-v4', 'type': 'basic_sgld', 'excel': './averages/processed_Hopper_baseline_sppo.xlsx'},
     {'env': 'Hopper-v4', 'type': 'dynamic_sgld', 'excel': './averages/processed_Hopper_dynamic_sppo.xlsx'},
     {'env': 'Hopper-v4', 'type': 'basic_sppo', 'excel': './averages/processed_Hopper_baseline_sgld.xlsx'},
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     all_speed = []
     all_distance = []
     
-    for data in datas:
+    for data in data:
         if os.path.exists(data['excel']):
             avg_df = pd.read_excel(data['excel'], sheet_name='Averages')
         else:

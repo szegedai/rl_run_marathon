@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-datas = [
+data = [
         {
             'env': 'Hopper',
             'type': 'baseline_sgld',
@@ -46,14 +46,14 @@ if __name__ == "__main__":
     if not os.path.exists('averages'):
         os.makedirs('averages')
 
-    for data in datas:
-        input_excel_path = data['excel']
+    for datum in data:
+        input_excel_path = datum['excel']
 
         df = pd.read_excel(input_excel_path)
-        print(data['env'])
-        print(data['type'])
+        print(datum['env'])
+        print(datum['type'])
         result_df = avg(input_excel_path)
         result_df['RowId'] = pd.to_numeric(result_df['RowId'], errors='coerce')
 
-        averages_excel_name = 'averages/processed_'+data['env']+'_'+data['type']+'.xlsx'
+        averages_excel_name = 'averages/processed_'+datum['env']+'_'+datum['type']+'.xlsx'
         save_averages(averages_excel_name, result_df, df)
