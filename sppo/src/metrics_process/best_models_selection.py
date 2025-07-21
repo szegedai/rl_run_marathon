@@ -2,10 +2,10 @@ import pandas as pd
 import os
 
 data = [
-    {'env': 'Hopper-v4', 'type': 'basic_sgld', 'excel': './averages/processed_Hopper_baseline_sppo.xlsx'},
-    {'env': 'Hopper-v4', 'type': 'dynamic_sgld', 'excel': './averages/processed_Hopper_dynamic_sppo.xlsx'},
-    {'env': 'Hopper-v4', 'type': 'basic_sppo', 'excel': './averages/processed_Hopper_baseline_sgld.xlsx'},
-    {'env': 'Hopper-v4', 'type': 'dynamic_sppo', 'excel': './averages/processed_Hopper_dynamic_sgld.xlsx'}
+    {'env': 'Hopper-v4', 'type': 'basic_sppo', 'excel': './averages/processed_Hopper_baseline_sppo.xlsx'},
+    {'env': 'Hopper-v4', 'type': 'dynamic_sppo', 'excel': './averages/processed_Hopper_dynamic_sppo.xlsx'},
+    {'env': 'Hopper-v4', 'type': 'basic_sgld', 'excel': './averages/processed_Hopper_baseline_sgld.xlsx'},
+    {'env': 'Hopper-v4', 'type': 'dynamic_sgld', 'excel': './averages/processed_Hopper_dynamic_sgld.xlsx'},
 ]
 
 def safe_calculate_metrics(avg_df):
